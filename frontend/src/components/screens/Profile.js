@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ActivityIndicator, Alert, Button, Image, TextInput } from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator, Alert, Button, Image, TextInput, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from '@expo/vector-icons'; // Mengimpor ikon
 
@@ -17,7 +17,7 @@ export default function ProfileScreen({ onLogout }) {
         if (!tokenData) throw new Error("No token found");
 
         const { token } = JSON.parse(tokenData);
-        const response = await fetch("http://192.168.10.15:5000/api/profile", {
+        const response = await fetch("http://192.168.203.74:5000/api/profile", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -49,7 +49,7 @@ export default function ProfileScreen({ onLogout }) {
 
       const { token } = JSON.parse(tokenData);
 
-      const response = await fetch("http://192.168.10.15:5000/api/profile", {
+      const response = await fetch("http://192.168.203.74:5000/api/profile", {
         method: "PUT", // Menggunakan PUT untuk update data
         headers: {
           "Content-Type": "application/json",
@@ -133,6 +133,9 @@ export default function ProfileScreen({ onLogout }) {
         </View>
       </View>
 
+      {/* Garis pemisah */}
+      <View style={styles.separator}></View>
+
       {/* Container untuk Setting */}
       <View style={styles.settingContainer}>
         <View style={styles.iconRow}>
@@ -149,8 +152,22 @@ export default function ProfileScreen({ onLogout }) {
         </View>
       </View>
 
-      <Button title={isEditing ? "Save Changes" : "Edit Profile"} onPress={isEditing ? handleSaveChanges : () => setIsEditing(true)} color="#4A90E2" />
-      <Button title="Logout" onPress={onLogout} color="#dc3545" />
+      {/* Tombol Edit/Save dan Logout */}
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={[styles.button, styles.editButton]}
+          onPress={isEditing ? handleSaveChanges : () => setIsEditing(true)}
+        >
+          <Text style={styles.buttonText}>{isEditing ? "Save Changes" : "Edit Profile"}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.button, styles.logoutButton]}
+          onPress={onLogout}
+        >
+          <Text style={styles.buttonText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -207,6 +224,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     marginBottom: 10,
     width: "100%",
+    backgroundColor: "#f8f9fa",
   },
   errorText: {
     fontSize: 16,
@@ -253,5 +271,31 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 5,
     elevation: 6,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: "#ddd",
+    marginVertical: 20,
+  },
+  buttonContainer: {
+    marginTop: 20,
+  },
+  button: {
+    height: 45,
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  editButton: {
+    backgroundColor: "#4A90E2",
+  },
+  logoutButton: {
+    backgroundColor: "#dc3545",
+  },
+  buttonText: {
+    fontSize: 16,
+    color: "#fff",
+    fontWeight: "bold",
   },
 });

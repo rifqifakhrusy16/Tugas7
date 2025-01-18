@@ -6,8 +6,9 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  ImageBackground,
+  Image,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function LoginScreen({ navigation, onLogin }) {
@@ -16,7 +17,7 @@ export default function LoginScreen({ navigation, onLogin }) {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://192.168.10.15:5000/api/auth/login", {
+      const response = await fetch("http://192.168.203.74:5000/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -38,68 +39,94 @@ export default function LoginScreen({ navigation, onLogin }) {
   };
 
   return (
-    <LinearGradient
-      colors={["#6a11cb", "#2575fc"]}
-      style={styles.gradientContainer}
+    <ImageBackground
+      source={require("../../../assets/latar.jpg")} // Gambar latar belakang lokal
+      style={styles.background}
+      resizeMode="cover"
     >
-      <View style={styles.container}>
-        <Text style={styles.title}>Welcome Back!</Text>
-        <Text style={styles.subtitle}>Login to continue</Text>
+      <View style={styles.overlay}>
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <Image
+              source={require("../../../assets/logo.jpg")} // Gambar logo lokal
+              style={styles.logo}
+              resizeMode="contain"
+            />
+            <Text style={styles.title}>Welcome Back!</Text>
+          </View>
+          <Text style={styles.subtitle}>Login to continue</Text>
 
-        <View style={styles.inputContainer}>
-          <Ionicons name="person-outline" size={20} color="#aaa" style={styles.icon} />
-          <TextInput
-            style={styles.input}
-            placeholder="Username"
-            placeholderTextColor="#aaa"
-            value={username}
-            onChangeText={setUsername}
-          />
+          <View style={styles.inputContainer}>
+            <Ionicons name="person-outline" size={20} color="#aaa" style={styles.icon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Username"
+              placeholderTextColor="#aaa"
+              value={username}
+              onChangeText={setUsername}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Ionicons name="lock-closed-outline" size={20} color="#aaa" style={styles.icon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              placeholderTextColor="#aaa"
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+            />
+          </View>
+
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+            <Text style={styles.registerText}>Don't have an account? Register</Text>
+          </TouchableOpacity>
         </View>
-
-        <View style={styles.inputContainer}>
-          <Ionicons name="lock-closed-outline" size={20} color="#aaa" style={styles.icon} />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor="#aaa"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-          />
-        </View>
-
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-          <Text style={styles.registerText}>Don't have an account? Register</Text>
-        </TouchableOpacity>
       </View>
-    </LinearGradient>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  gradientContainer: {
+  background: {
     flex: 1,
   },
-  container: {
+  overlay: {
     flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Efek gelap di atas gambar latar
     justifyContent: "center",
     alignItems: "center",
+  },
+  container: {
+    backgroundColor: "rgba(255, 255, 255, 0.9)", // Latar semi-transparan
     padding: 20,
+    borderRadius: 12,
+    width: "90%",
+    alignItems: "center",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  logo: {
+    width: 50,
+    height: 50,
+    marginRight: 10,
   },
   title: {
-    fontSize: 32,
-    color: "#fff",
+    fontSize: 28,
+    color: "#333",
     fontWeight: "bold",
-    marginBottom: 10,
   },
   subtitle: {
     fontSize: 16,
-    color: "#ddd",
+    color: "#666",
     marginBottom: 30,
   },
   inputContainer: {
@@ -122,7 +149,7 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   button: {
-    backgroundColor: "#fff",
+    backgroundColor: "#2575fc",
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,
@@ -131,12 +158,12 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   buttonText: {
-    color: "#2575fc",
+    color: "#fff",
     fontWeight: "bold",
     fontSize: 16,
   },
   registerText: {
-    color: "#fff",
+    color: "#2575fc",
     marginTop: 20,
     fontSize: 14,
   },
